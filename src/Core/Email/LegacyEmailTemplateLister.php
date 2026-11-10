@@ -6,23 +6,28 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\PrestaShop\Core\Email;
+namespace PrestaShop\\PrestaShop\\Core\\Email;
 
-use Symfony\Component\Finder\Finder;
-use Symfony\Component\Finder\SplFileInfo;
+use Symfony\\Component\\Finder\\Finder;
+use Symfony\\Component\\Finder\\SplFileInfo;
 
 /**
- * Scans and lists legacy email templates (HTML/TXT files) from /mails/{language}/ and /modules/{modulename}/mails/{language}/
+ * Scans and lists legacy email templates from the core, active theme and modules.
  */
 class LegacyEmailTemplateLister
 {
     private string $mailsDir;
     private string $modulesDir;
+    private ?string $themeDir;
 
-    public function __construct(string $mailsDir = _PS_MAIL_DIR_, string $modulesDir = _PS_MODULE_DIR_)
-    {
+    public function __construct(
+        string $mailsDir = _PS_MAIL_DIR_,
+        string $modulesDir = _PS_MODULE_DIR_,
+        ?string $themeDir = null
+    ) {
         $this->mailsDir = $mailsDir;
         $this->modulesDir = $modulesDir;
+        $this->themeDir = $themeDir ?? (defined('_PS_THEME_DIR_') ? _PS_THEME_DIR_ : null);
     }
 
     /**
@@ -38,6 +43,12 @@ class LegacyEmailTemplateLister
         }
 
         $templates = array_merge($templates, $this->scanModuleTemplates($isoCode));
+
+        // Theme templates have priority over core and module templates when sending legacy emails.
+        if (null !== $this->themeDir) {
+            $themePath = rtrim($this->themeDir, '/\\\\') . '/mails/' . $isoCode . '/';
+            $templates = array_merge($templates, $this->scanDirectory($themePath, '', false));
+        }
 
         return $templates;
     }

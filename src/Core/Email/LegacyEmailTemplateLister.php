@@ -12,22 +12,25 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
 /**
- * Scans and lists legacy email templates from the core, active theme and modules.
+ * Scans and lists legacy email templates from the active theme, parent theme, core and modules.
  */
 class LegacyEmailTemplateLister
 {
     private string $mailsDir;
     private string $modulesDir;
     private ?string $themeDir;
+    private ?string $parentThemeDir;
 
     public function __construct(
         string $mailsDir = _PS_MAIL_DIR_,
         string $modulesDir = _PS_MODULE_DIR_,
-        ?string $themeDir = null
+        ?string $themeDir = null,
+        ?string $parentThemeDir = null
     ) {
         $this->mailsDir = $mailsDir;
         $this->modulesDir = $modulesDir;
         $this->themeDir = $themeDir ?? (defined('_PS_THEME_DIR_') ? _PS_THEME_DIR_ : null);
+        $this->parentThemeDir = $parentThemeDir ?? (defined('_PS_PARENT_THEME_DIR_') && _PS_PARENT_THEME_DIR_ !== '' ? _PS_PARENT_THEME_DIR_ : null);
     }
 
     /**
@@ -44,7 +47,13 @@ class LegacyEmailTemplateLister
 
         $templates = array_merge($templates, $this->scanModuleTemplates($isoCode));
 
-        // Theme templates have priority over core and module templates when sending legacy emails.
+        // Parent theme templates override core and module templates when sending legacy emails.
+        if (null !== $this->parentThemeDir) {
+            $parentThemePath = rtrim($this->parentThemeDir, '/\\') . '/mails/' . $isoCode . '/';
+            $templates = array_merge($templates, $this->scanDirectory($parentThemePath, '', false));
+        }
+
+        // Active theme templates have priority over parent theme, core and module templates.
         if (null !== $this->themeDir) {
             $themePath = rtrim($this->themeDir, '/\\') . '/mails/' . $isoCode . '/';
             $templates = array_merge($templates, $this->scanDirectory($themePath, '', false));

@@ -6,10 +6,10 @@
 
 declare(strict_types=1);
 
-namespace Tests\\Unit\\Core\\Email;
+namespace Tests\Unit\Core\Email;
 
-use PHPUnit\\Framework\\TestCase;
-use PrestaShop\\PrestaShop\\Core\\Email\\LegacyEmailTemplateLister;
+use PHPUnit\Framework\TestCase;
+use PrestaShop\PrestaShop\Core\Email\LegacyEmailTemplateLister;
 
 class LegacyEmailTemplateListerTest extends TestCase
 {
@@ -88,9 +88,9 @@ class LegacyEmailTemplateListerTest extends TestCase
             return;
         }
 
-        $iterator = new \\RecursiveIteratorIterator(
-            new \\RecursiveDirectoryIterator($directory, \\FilesystemIterator::SKIP_DOTS),
-            \\RecursiveIteratorIterator::CHILD_FIRST
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($directory, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::CHILD_FIRST
         );
 
         foreach ($iterator as $file) {

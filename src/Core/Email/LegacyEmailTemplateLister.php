@@ -6,10 +6,10 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\\PrestaShop\\Core\\Email;
+namespace PrestaShop\PrestaShop\Core\Email;
 
-use Symfony\\Component\\Finder\\Finder;
-use Symfony\\Component\\Finder\\SplFileInfo;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Scans and lists legacy email templates from the core, active theme and modules.
@@ -46,7 +46,7 @@ class LegacyEmailTemplateLister
 
         // Theme templates have priority over core and module templates when sending legacy emails.
         if (null !== $this->themeDir) {
-            $themePath = rtrim($this->themeDir, '/\\\\') . '/mails/' . $isoCode . '/';
+            $themePath = rtrim($this->themeDir, '/\\') . '/mails/' . $isoCode . '/';
             $templates = array_merge($templates, $this->scanDirectory($themePath, '', false));
         }
 

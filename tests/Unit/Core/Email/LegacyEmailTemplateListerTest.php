@@ -53,6 +53,44 @@ class LegacyEmailTemplateListerTest extends TestCase
         self::assertArrayNotHasKey('html_only', $templates);
     }
 
+    public function testItUsesParentThemeTemplatesWhenNoActiveThemeOverrideExists(): void
+    {
+        $mailsDir = $this->temporaryDirectory . '/mails';
+        $modulesDir = $this->temporaryDirectory . '/modules';
+        $parentThemeDir = $this->temporaryDirectory . '/themes/parent';
+
+        $this->createTemplate($mailsDir . '/es', 'shared_template');
+        $this->createTemplate($parentThemeDir . '/mails/es', 'shared_template');
+
+        $lister = new LegacyEmailTemplateLister($mailsDir, $modulesDir, null, $parentThemeDir);
+        $templates = $lister->getLegacyTemplates('es');
+
+        self::assertSame(
+            $parentThemeDir . '/mails/es/shared_template.html',
+            $templates['shared_template']['html_path']
+        );
+        self::assertFalse($templates['shared_template']['is_core']);
+    }
+
+    public function testActiveThemeTemplatesTakePriorityOverParentThemeTemplates(): void
+    {
+        $mailsDir = $this->temporaryDirectory . '/mails';
+        $modulesDir = $this->temporaryDirectory . '/modules';
+        $parentThemeDir = $this->temporaryDirectory . '/themes/parent';
+        $themeDir = $this->temporaryDirectory . '/themes/child';
+
+        $this->createTemplate($parentThemeDir . '/mails/es', 'shared_template');
+        $this->createTemplate($themeDir . '/mails/es', 'shared_template');
+
+        $lister = new LegacyEmailTemplateLister($mailsDir, $modulesDir, $themeDir, $parentThemeDir);
+        $templates = $lister->getLegacyTemplates('es');
+
+        self::assertSame(
+            $themeDir . '/mails/es/shared_template.html',
+            $templates['shared_template']['html_path']
+        );
+    }
+
     public function testItKeepsListingCoreAndModuleTemplates(): void
     {
         $mailsDir = $this->temporaryDirectory . '/mails';

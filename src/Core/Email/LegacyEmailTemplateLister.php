@@ -6,10 +6,10 @@
 
 declare(strict_types=1);
 
-namespace PrestaShop\\PrestaShop\\Core\\Email;
+namespace PrestaShop\PrestaShop\Core\Email;
 
-use Symfony\\Component\\Finder\\Finder;
-use Symfony\\Component\\Finder\\SplFileInfo;
+use Symfony\Component\Finder\Finder;
+use Symfony\Component\Finder\SplFileInfo;
 
 /**
  * Scans and lists legacy email templates from the active theme, parent theme, core and modules.

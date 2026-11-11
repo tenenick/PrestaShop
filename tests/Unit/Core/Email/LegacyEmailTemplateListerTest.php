@@ -79,6 +79,20 @@ class LegacyEmailTemplateListerTest extends TestCase
         );
     }
 
+    public function testActiveThemeDoesNotBorrowMissingFileFromParentTheme(): void
+    {
+        $this->filesystem->dumpFile($this->themesDir . '/active/mails/en/split.html', 'active html');
+        $this->filesystem->dumpFile($this->themesDir . '/parent/mails/en/split.txt', 'parent txt');
+
+        $templates = $this->createLister()->getLegacyTemplates('en');
+
+        $this->assertSame(
+            $this->themesDir . '/active/mails/en/split.html',
+            $templates['split']['html_path']
+        );
+        $this->assertNull($templates['split']['txt_path']);
+    }
+
     public function testParentThemeIsUsedWhenActiveThemeDoesNotContainTemplate(): void
     {
         $this->filesystem->dumpFile($this->themesDir . '/parent/mails/en/parent_only.html', 'content');

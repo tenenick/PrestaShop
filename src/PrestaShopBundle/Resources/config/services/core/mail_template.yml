@@ -48,7 +48,7 @@ services:
       $modulesDir: '%modules_dir%'
       $themesDir: '%kernel.project_dir%/themes'
       $themeName: "@=service('prestashop.adapter.legacy.context').getContext().shop.theme.getName()"
-      $parentThemeName: "@=service('prestashop.adapter.legacy.context').getContext().shop.theme.get('parent') ?: ''"
+      $parentThemeName: "@=service('prestashop.adapter.legacy.context').getContext().shop.theme.get('parent') ? service('prestashop.adapter.legacy.context').getContext().shop.theme.get('parent') : ''"
 
   prestashop.core.mail_template.command_handler.generate_theme_mails_handler:
     class: 'PrestaShop\PrestaShop\Core\Domain\MailTemplate\CommandHandler\GenerateThemeMailTemplatesHandler'

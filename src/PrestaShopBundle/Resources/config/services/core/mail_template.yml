@@ -6,43 +6,43 @@ services:
   prestashop.core.mail_template.theme_catalog: '@prestashop.core.mail_template.theme_folder_catalog'
 
   prestashop.core.mail_template.theme_folder_scanner:
-    class: 'PrestaShop\\PrestaShop\\Core\\MailTemplate\\FolderThemeScanner'
+    class: 'PrestaShop\PrestaShop\Core\MailTemplate\FolderThemeScanner'
     arguments:
       $moduleDirectory: '%modules_dir%'
 
-  PrestaShop\\PrestaShop\\Core\\MailTemplate\\FolderThemeCatalog:
+  PrestaShop\PrestaShop\Core\MailTemplate\FolderThemeCatalog:
     arguments:
       - '%mail_themes_dir%'
       - '@prestashop.core.mail_template.theme_folder_scanner'
       - '@prestashop.core.hook.dispatcher'
 
   prestashop.core.mail_template.theme_folder_catalog:
-    alias: 'PrestaShop\\PrestaShop\\Core\\MailTemplate\\FolderThemeCatalog'
+    alias: 'PrestaShop\PrestaShop\Core\MailTemplate\FolderThemeCatalog'
     deprecated:
-      package: PrestaShop\\PrestaShop
+      package: PrestaShop\PrestaShop
       version: 9.0
 
   prestashop.core.mail_template.variables_builder:
-    class: 'PrestaShop\\PrestaShop\\Core\\MailTemplate\\Layout\\LayoutVariablesBuilder'
+    class: 'PrestaShop\PrestaShop\Core\MailTemplate\Layout\LayoutVariablesBuilder'
     arguments:
       - '@prestashop.core.hook.dispatcher'
       - '@prestashop.core.language.language_default_fonts_catalog'
       - mailThemesUrl: "@=service('prestashop.adapter.legacy.context').getMailThemesUrl()"
 
   prestashop.core.mail_template.generator:
-    class: 'PrestaShop\\PrestaShop\\Core\\MailTemplate\\MailTemplateGenerator'
+    class: 'PrestaShop\PrestaShop\Core\MailTemplate\MailTemplateGenerator'
     arguments:
       - '@prestashop.core.mail_template.mail_template_renderer'
       - '@logger'
 
   prestashop.core.mail_template.transformation.css_inline:
-    class: 'PrestaShop\\PrestaShop\\Core\\MailTemplate\\Transformation\\CSSInlineTransformation'
+    class: 'PrestaShop\PrestaShop\Core\MailTemplate\Transformation\CSSInlineTransformation'
 
   prestashop.core.mail_template.transformation.html_textify:
-    class: 'PrestaShop\\PrestaShop\\Core\\MailTemplate\\Transformation\\HTMLToTextTransformation'
+    class: 'PrestaShop\PrestaShop\Core\MailTemplate\Transformation\HTMLToTextTransformation'
 
   prestashop.core.email.legacy_template_lister:
-    class: 'PrestaShop\\PrestaShop\\Core\\Email\\LegacyEmailTemplateLister'
+    class: 'PrestaShop\PrestaShop\Core\Email\LegacyEmailTemplateLister'
     arguments:
       $mailsDir: '%kernel.project_dir%/mails'
       $modulesDir: '%modules_dir%'
@@ -51,7 +51,7 @@ services:
       $parentThemeName: "@=service('prestashop.adapter.legacy.context').getContext().shop.theme.get('parent')"
 
   prestashop.core.mail_template.command_handler.generate_theme_mails_handler:
-    class: 'PrestaShop\\PrestaShop\\Core\\Domain\\MailTemplate\\CommandHandler\\GenerateThemeMailTemplatesHandler'
+    class: 'PrestaShop\PrestaShop\Core\Domain\MailTemplate\CommandHandler\GenerateThemeMailTemplatesHandler'
     arguments:
       - '@prestashop.core.admin.lang.repository'
       - '@prestashop.core.mail_template.theme_catalog'
@@ -62,13 +62,13 @@ services:
     autoconfigure: true
 
   # Email body template translation services
-  PrestaShop\\PrestaShop\\Adapter\\MailTemplate\\EmailBodyTemplateRepository:
+  PrestaShop\PrestaShop\Adapter\MailTemplate\EmailBodyTemplateRepository:
     arguments:
       $coreMailsDir: '%kernel.project_dir%/mails'
       $modulesDir: '%modules_dir%'
 
   prestashop.core.grid.data_factory.email_body_template:
-    class: 'PrestaShop\\PrestaShop\\Core\\Grid\\Data\\Factory\\EmailBodyTemplateGridDataFactory'
+    class: 'PrestaShop\PrestaShop\Core\Grid\Data\Factory\EmailBodyTemplateGridDataFactory'
     arguments:
-      - '@PrestaShop\\PrestaShop\\Adapter\\MailTemplate\\EmailBodyTemplateRepository'
-      - '@=service("PrestaShop\\\\PrestaShop\\\\Core\\\\Context\\\\LanguageContext").getIsoCode()'
+      - '@PrestaShop\PrestaShop\Adapter\MailTemplate\EmailBodyTemplateRepository'
+      - '@=service("PrestaShop\\PrestaShop\\Core\\Context\\LanguageContext").getIsoCode()'
